@@ -1,0 +1,1 @@
+$(document).ready(function(){var e=io();e.on("chat message",function(e){$("#list-msgs").html("");var n=e;n.length>0&&(console.log("son mas de 0 : "+n.length),n.map(function(e){$("#list-msgs").append($("<li>").text(e.message))}))}),$("#new-msg").keyup(function(n){13===n.keyCode&&(e.emit("chat message",$("#new-msg").val()),$("#new-msg").val(""))})});

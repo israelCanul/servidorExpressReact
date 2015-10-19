@@ -4,11 +4,30 @@ var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
+var mongoose= require('mongoose');
+var app = express();
+var socket_io  = require('socket.io');
+var io  = socket_io();
+app.io = io;
 
+// rutas 
 var routes = require('./routes/index');
 var users = require('./routes/users');
+var chat = require('./routes/chat');
 
-var app = express();
+//conexion con la bd
+mongoose.connect('mongodb://localhost/test');
+
+var db = mongoose.connection;
+db.on('error', console.error.bind(console, 'connection error:'));
+db.once('open', function (callback) {
+  console.log('conectado a la BD');
+});
+
+// se importan los modelos y los controladores para la bd
+var models     = require('./model/message')(app, mongoose);
+var contBooks= require('./controller/controllerMessages');
+var Message = mongoose.model('Message');
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -23,7 +42,26 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', routes);
+app.use('/chat', chat);
 app.use('/users', users);
+
+    io.on('connection',function(socket){
+    console.log("New user connected");
+    contBooks.findAllMessages(io);
+    // funcion que se encarga de compartir la informacion
+    // los clientes
+    socket.on('chat message', function(msg) {
+      contBooks.addMessages(msg);
+      contBooks.findAllMessages(io);      
+        //console.log("mensaje entrante : "+msg);
+      });
+    // mostramos en consola cuando un cliente 
+      // se desconecta
+      socket.on('disconnect',function(){
+        console.log("User disconnected");
+      })
+
+  });
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
