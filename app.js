@@ -50,11 +50,15 @@ app.use('/users', users);
     contBooks.findAllMessages(io);
     // funcion que se encarga de compartir la informacion
     // los clientes
-    socket.on('chat message', function(msg) {
-      contBooks.addMessages(msg);
+    socket.on('chat message', function() {
+      // obtiene todos los mensajes
       contBooks.findAllMessages(io);      
-        //console.log("mensaje entrante : "+msg);
-      });
+    });
+    socket.on('new message', function(msg) {
+      // agrega un nuevo mensaje
+      contBooks.addMessages(msg);
+      contBooks.findAllMessages(io); 
+    }); 
     // mostramos en consola cuando un cliente 
       // se desconecta
       socket.on('disconnect',function(){

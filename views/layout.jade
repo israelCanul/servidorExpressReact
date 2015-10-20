@@ -2,11 +2,13 @@ doctype html
 html
   head
     title= title
-    link(rel='stylesheet', href='/stylesheets/style.css')
+    link(rel='stylesheet', href='https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.1/css/materialize.min.css')
   body
     block content
     script(src='/javascripts/build/dist/jquery.min.js')
     script(src='/javascripts/build/dist/socket.io.js')
-    script(src='/javascripts/build/dist/react.min.js')
-    script(src='/javascripts/build/dist/helloWorld.js')
-    script(src='/javascripts/build/dist/main.js')
+
+    script(src='https://cdnjs.cloudflare.com/ajax/libs/react/0.14.0/react.js')
+    script(src='https://cdnjs.cloudflare.com/ajax/libs/react/0.14.0/react-dom.js')
+    script(src='/javascripts/build/dist/chat.js')
+   

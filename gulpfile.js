@@ -5,7 +5,6 @@ var uglify = require('gulp-uglify');
 gulp.task('jsx',function(){
     return gulp.src('./public/javascripts/src/*.jsx')
         .pipe(babel())
-        .pipe(uglify())
         .pipe(gulp.dest('./public/javascripts/build/dist'));
         //.pipe(gulp.dest('./public/javascripts/build'));	
 });

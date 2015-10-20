@@ -16,7 +16,7 @@ $(document).ready(function(){
 
     $('#new-msg').keyup(function (evt) {
       if (evt.keyCode === 13) {
-        socket.emit('chat message', $('#new-msg').val());
+        socket.emit('new message', $('#new-msg').val());
         $('#new-msg').val('');
       }
     });
