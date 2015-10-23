@@ -26,14 +26,22 @@ var ChatBox = React.createClass({
 	render: function render() {
 		return React.createElement(
 			'div',
-			{ className: 'card-panel hoverable' },
+			null,
 			React.createElement(
-				'h4',
-				null,
-				'Mensages'
-			),
-			React.createElement(CommentList, { mensajes: this.state.coments }),
-			React.createElement(FormComment, { submitComment: this.submitComment })
+				'div',
+				{ className: 'row' },
+				React.createElement(
+					'div',
+					{ className: 'col s12 m10 offset-m1' },
+					React.createElement(
+						'h4',
+						null,
+						'Mensajes'
+					),
+					React.createElement(CommentList, { mensajes: this.state.coments }),
+					React.createElement(FormComment, { submitComment: this.submitComment })
+				)
+			)
 		);
 	}
 });
@@ -51,42 +59,33 @@ var CommentList = React.createClass({
 		if (this.props.mensajes) {
 			comentarios = this.props.mensajes.map(function (msj) {
 				return React.createElement(
-					'div',
-					{ className: 'cajaComentarios' },
+					'li',
+					null,
 					React.createElement(
-						'ul',
-						{ className: 'collection' },
+						'div',
+						null,
 						React.createElement(
-							'li',
-							{ className: 'collection-item avatar' },
+							'label',
+							null,
+							msj.author
+						),
+						React.createElement(
+							'span',
+							null,
 							React.createElement(
-								'span',
-								{ 'class': 'title' },
-								msj.author
-							),
-							React.createElement(
-								'p',
+								'small',
 								null,
-								React.createElement(
-									'small',
-									null,
-									msj.time
-								),
-								React.createElement(
-									'span',
-									null,
-									' : '
-								),
-								msj.message
-							)
+								" " + msj.time + " : "
+							),
+							msj.message
 						)
 					)
 				);
 			});
 		}
 		return React.createElement(
-			'div',
-			{ className: 'listaComentarios' },
+			'ul',
+			{ className: 'mensajes' },
 			comentarios
 		);
 	}
@@ -100,8 +99,17 @@ var FormComment = React.createClass({
 		var that = this;
 		var author = 'mismo';
 		var text = that.refs.text.getDOMNode().value;
+		var color = that.refs.confColor.getDOMNode().value;
+		var author = that.refs.author.getDOMNode().value;
 		var comment = text;
-		this.props.submitComment(comment, function (err) {
+		var mensaje = {
+			author: author,
+			mensaje: comment,
+			conf: {
+				color: color
+			}
+		};
+		this.props.submitComment(mensaje, function (err) {
 			that.refs.text.getDOMNode().value = '';
 		});
 	},
@@ -114,20 +122,49 @@ var FormComment = React.createClass({
 				{ className: 'row' },
 				React.createElement(
 					'div',
-					{ className: 'col-xs-8' },
-					React.createElement('textarea', { name: 'text', ref: 'text', placeholder: 'Mensaje', required: true })
+					{ className: 'col s12' },
+					React.createElement(
+						'div',
+						{ className: 'col s6' },
+						React.createElement('input', { className: 'author', type: 'texto', name: 'author', ref: 'author', placeholder: 'Nombre', required: true })
+					),
+					React.createElement(
+						'div',
+						{ className: 'col s3' },
+						React.createElement('input', { name: 'color', ref: 'confColor', type: 'color', onChange: this.handleChange })
+					)
 				),
 				React.createElement(
 					'div',
-					{ className: 'col-xs-4' },
+					{ className: 'col s8' },
+					React.createElement('input', { type: 'text', name: 'text', ref: 'text', placeholder: 'Mensaje', required: true })
+				),
+				React.createElement(
+					'div',
+					{ className: 'col s4' },
 					React.createElement(
 						'button',
-						{ type: 'submit', ref: 'submitButton' },
+						{ className: 'waves-effect waves-light btn', type: 'submit', ref: 'submitButton' },
 						'Enviar'
 					)
 				)
 			)
 		);
+	}
+});
+
+var Color = React.createClass({
+	displayName: 'Color',
+
+	getInitialState: function getInitialState() {
+		return { value: 'setColor' };
+	},
+	handleChange: function handleChange(event) {
+		this.setState({ value: event.target.value });
+	},
+	render: function render() {
+		var value = this.state.value;
+		return React.createElement('input', { name: 'color', refs: 'confColor', type: 'color', value: value, onChange: this.handleChange });
 	}
 });
 

@@ -22,10 +22,14 @@ var ChatBox = React.createClass({
 	},	
 	render:function(){
 		return(
-			<div className='card-panel hoverable'>
-				<h4>Mensages</h4>
-				<CommentList mensajes={this.state.coments}/>
-				<FormComment submitComment={this.submitComment}/>
+			<div>
+				<div className='row'>
+					<div className='col s12 m10 offset-m1'>
+						<h4>Mensajes</h4>
+						<CommentList mensajes={this.state.coments}/>
+						<FormComment submitComment={this.submitComment}/>
+					</div>
+				</div>
 			</div>
 			);
 	}
@@ -38,24 +42,19 @@ var CommentList= React.createClass({
 		if(this.props.mensajes){
 			comentarios=this.props.mensajes.map(function(msj){
 				return(
-					<div className='cajaComentarios'>
-					<ul className='collection'>
-						<li className="collection-item avatar">
-							<span class="title">{msj.author}</span>
-							<p><small>{msj.time}</small>
-							<span> : </span>
-							  {msj.message}
-						    </p>
+						<li>
+							<div>
+								<label>{msj.author}</label>
+								<span><small>{" "+msj.time+" : "}</small>{msj.message}</span>
+						    </div>
 						</li>
-					</ul>
-					</div>
 					);
 			});	
 		}
 		return(
-			<div className='listaComentarios'>
-			{comentarios}
-			</div>
+			<ul  className='mensajes'>
+				{comentarios}
+			</ul>
 			);
 
 	}
@@ -67,8 +66,17 @@ var FormComment=React.createClass({
 		var that=this;
 		var author='mismo';
 		var text= that.refs.text.getDOMNode().value;
+		var color=that.refs.confColor.getDOMNode().value;
+		var author= that.refs.author.getDOMNode().value;
 		var comment=text;
-		this.props.submitComment(comment, function (err) {
+		var mensaje={
+			author:author,
+			mensaje:comment,
+			conf:{
+				color:color
+			},
+		};
+		this.props.submitComment(mensaje, function (err) {
 			that.refs.text.getDOMNode().value='';
 		}); 
 	},
@@ -76,15 +84,36 @@ var FormComment=React.createClass({
 		return(
 		<form className="commentForm" onSubmit={this.handleSubmit}>
 			<div className='row'>
-				<div className='col-xs-8'>
-					<textarea name="text" ref="text" placeholder="Mensaje" required></textarea>
+				<div className='col s12'>
+					<div className='col s6'>
+						<input className='author' type='texto' name="author" ref="author" placeholder="Nombre" required />
+					</div>
+					<div className='col s3' >
+						<input name='color' ref='confColor' type="color" onChange={this.handleChange} /> 
+					</div>
 				</div>
-				<div className='col-xs-4'>
-					<button type="submit" ref="submitButton">Enviar</button>
+				<div className='col s8'>
+					<input type='text' name="text" ref="text" placeholder="Mensaje" required />
+				</div>
+				<div className='col s4'>
+					<button className='waves-effect waves-light btn' type="submit" ref="submitButton">Enviar</button>
 				</div>
 			</div>
 		</form>
 		);
+	}
+});
+
+var Color=React.createClass({
+	getInitialState: function() {
+	    return {value: 'setColor'};
+	},
+	handleChange: function(event) {
+	    this.setState({value: event.target.value});
+	},
+	render:function(){
+	   var value = this.state.value;
+	   return <input name='color' refs='confColor' type="color" value={value} onChange={this.handleChange} />;
 	}
 });
 

@@ -28,6 +28,7 @@ db.once('open', function (callback) {
 var models     = require('./model/message')(app, mongoose);
 var contBooks= require('./controller/controllerMessages');
 var Message = mongoose.model('Message');
+var Author = mongoose.model('Author');
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -57,6 +58,11 @@ app.use('/users', users);
     socket.on('new message', function(msg) {
       // agrega un nuevo mensaje
       contBooks.addMessages(msg);
+      var author={
+        author:msg.author,
+        color:msg.conf.color
+      };
+      //contBooks.addAuthor(author);
       contBooks.findAllMessages(io); 
     }); 
     // mostramos en consola cuando un cliente 
